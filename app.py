@@ -9,22 +9,21 @@ st.title("📈 Stock Price Predictor (Linear Regression)")
 ticker = st.text_input("Enter stock ticker (e.g. AAPL):", "AAPL")
 
 if ticker:
-    df = yf.download(ticker, start="2015-01-01")
+    df = yf.download(ticker, start="2015-01-01", group_by='ticker')
+    df = df[['Close']].copy()
+    df.columns = ['Close']  # Flatten MultiIndex
+    df['Date'] = df.index
+    df['Date_ordinal'] = pd.to_datetime(df['Date']).map(pd.Timestamp.toordinal)
 
-    if df.empty:
-        st.error("⚠️ Couldn't download data. Try a different ticker.")
-    else:
-        df = df[['Close']].dropna()
-        df['Date'] = df.index
-        df['Date_ordinal'] = pd.to_datetime(df['Date']).map(pd.Timestamp.toordinal)
+    X = df[['Date_ordinal']]
+    y = df['Close']
 
-        X = df[['Date_ordinal']]
-        y = df['Close']
+    model = LinearRegression()
+    model.fit(X, y)
 
-        model = LinearRegression()
-        model.fit(X, y)
-        df['Predicted_Close'] = model.predict(X)
+    df['Predicted_Close'] = model.predict(X)
 
-        st.line_chart(df[['Close', 'Predicted_Close']])
-        st.write("Most recent close:", df['Close'].iloc[-1])
+    st.line_chart(df[['Close', 'Predicted_Close']])
+    st.write("Most recent close:", df['Close'].iloc[-1])
+
 
