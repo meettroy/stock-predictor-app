@@ -1,0 +1,32 @@
+else:
+    df = df[['Close']].dropna()
+    df['Date'] = df.index
+    df['Date_ordinal'] = pd.to_datetime(df['Date']).map(pd.Timestamp.toordinal)
+
+    X = df[['Date_ordinal']]
+    y = df['Close']
+
+    model = LinearRegression()
+    model.fit(X, y)
+
+    df['Predicted_Close'] = model.predict(X)
+
+    # ✅ INSERT DEBUG LINES HERE
+    st.write("✅ Debug: DataFrame columns", df.columns.tolist())
+    st.write("✅ Debug: DataFrame shape", df.shape)
+
+    # Plot
+    st.line_chart(df[['Close', 'Predicted_Close']])
+    st.write("Most recent close:", df['Close'].iloc[-1])
+
+
+
+code app.py
+
+
+cd ~/stock-predictor-app
+
+
+find ~ -type d -name "stock-predictor-app" 2>/dev/null
+
+
