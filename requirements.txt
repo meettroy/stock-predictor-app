@@ -4,4 +4,4 @@ numpy
 yfinance
 scikit-learn
 matplotlib
-tensorflow-cpu
+tensorflow==2.13.0
